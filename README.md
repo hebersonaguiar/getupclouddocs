@@ -1,4 +1,4 @@
-## Dito Chat
+## GetUp Cloud Docs
 
 Esse reposítório foi criado para servir de complementação à documetação dos projetos do Desafio da GetUp Cloud, que são os repositórios abaixo:
 
