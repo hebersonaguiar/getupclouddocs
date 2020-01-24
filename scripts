@@ -1,0 +1,131 @@
+https://blog.4linux.com.br/kubernetes-configurando-um-cluster-multi-master/
+
+sed -e "s/cgroup-driver=systemd/cgroup-driver=cgroupfs/g" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+
+kubeadm join 10.128.0.2:6443 --token gxycgw.l5r1zqxau52ern6y \
+    --discovery-token-ca-cert-hash sha256:9fafd8802b55bb1d22b6f59722fe3512cfafdb854e0e3f2100de40268653d3a8
+
+
+kubeadm join 10.128.0.2:6443 --token gxycgw.l5r1zqxau52ern6y \
+    --discovery-token-ca-cert-hash sha256:9fafd8802b55bb1d22b6f59722fe3512cfafdb854e0e3f2100de40268653d3a8 \
+--control-plane --certificate-key c15d7c091fbbef93b3665b30d16e587fb37c1481f301bc11dc05cb27442c8181 --apiserver-advertise-address=10.128.0.4
+
+
+mkdir -p $HOME/.kube
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
+
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+
+34.107.139.115:443
+
+
+kubeadm init --control-plane-endpoint "loadbalancer.hebersonaguiar.me:443" --upload-certs
+
+
+cat > /etc/modules-load.d/k8s.conf <<EOF
+br_netfilter
+ip_vs_rr
+ip_vs_wrr
+ip_vs_sh
+nf_conntrack_ipv4
+ip_vs
+EOF
+
+
+
+global
+user haproxy
+group haproxy
+
+defaults
+mode http
+log global
+retries 2
+timeout connect 3000ms
+timeout server 5000ms
+timeout client 5000ms
+
+frontend kubernetes
+bind 10.128.0.13:6443
+option tcplog
+mode tcp
+default_backend kubernetes-master-nodes
+
+backend kubernetes-master-nodes
+mode tcp
+balance roundrobin
+option tcp-check
+server k8s-master-0 10.128.0.14:6443 check fall 3 rise 2
+server k8s-master-1 10.128.0.11:6443 check fall 3 rise 2
+server k8s-master-2 10.128.0.12:6443 check fall 3 rise 2
+
+
+cat > /root/kubeadm-config.yml <<EOF
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: ClusterConfiguration
+kubernetesVersion: stable
+controlPlaneEndpoint: "10.128.0.13:6443"
+networking:
+  podSubnet: "10.244.0.0/16"
+---
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: InitConfiguration
+localAPIEndpoint:
+  advertiseAddress: "10.128.0.14"
+  bindPort: 6443
+EOF
+
+
+Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+You can now join any number of the control-plane node running the following command on each as root:
+
+  kubeadm join 10.128.0.13:6443 --token k2ah4a.3qa1ztva9vo63911 \
+    --discovery-token-ca-cert-hash sha256:309da9845e6db6f607104b283130a12df48781dc088f6f3d7b07984d9dcd63c5 \
+    --control-plane --certificate-key 6c1df2fa6dfb4b0c984c4253fb0de1afc864864814abd257577fc6ea1fbabb4f
+
+Please note that the certificate-key gives access to cluster sensitive data, keep it secret!
+As a safeguard, uploaded-certs will be deleted in two hours; If necessary, you can use
+"kubeadm init phase upload-certs --upload-certs" to reload certs afterward.
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 10.128.0.13:6443 --token k2ah4a.3qa1ztva9vo63911 \
+    --discovery-token-ca-cert-hash sha256:309da9845e6db6f607104b283130a12df48781dc088f6f3d7b07984d9dcd63c5
+
+
+bash <<EOF
+# Lembre-se de executar nos outros masters!
+apt-get update
+apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common vim
+curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+echo 'deb https://apt.kubernetes.io/ kubernetes-xenial main' > /etc/apt/sources.list.d/kubernetes.list
+apt-get update
+apt-get install -y docker-ce docker-ce-cli containerd.io kubelet kubeadm kubectl
+apt-mark hold kubelet kubeadm kubectl
+EOF
+
+
+cat > /etc/docker/daemon.json <<EOF
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "journald"
+}
+EOF
+
+echo "KUBELET_EXTRA_ARGS='--node-ip=10.138.0.3'" > /etc/default/kubelet
+echo "KUBELET_EXTRA_ARGS='--node-ip=10.150.0.3'" > /etc/default/kubelet
+echo "KUBELET_EXTRA_ARGS='--node-ip=10.142.0.3'" > /etc/default/kubelet
