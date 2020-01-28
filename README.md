@@ -52,11 +52,17 @@ Servidores
 HAproxy/Nginx -- haproxy.hebersonaguiar.me 
 
 Master 1 -- tom.hebersonaguiar.me
+
 Master 2 -- jerry.hebersonaguiar.me
+
 Worker 1 -- popeye.hebersonaguiar.me
+
 Worker 2 -- pernalonga.hebersonaguiar.me
+
 Worker 3 -- patolino.hebersonaguiar.me
+
 Worker 4 -- charliebrown.hebersonaguiar.me
+
 
 
 Credenciais de acesso:
@@ -70,6 +76,7 @@ Grafana:
 Google Cloud:
 
 `Usuário: hebersonaguiar.ti@gmail.com`
+
 `Senha: yXRXQ3RFb143zGf7bq4N2v6phlfI2rUKjsKo2X3V`
 
 Vote, Result, Prometheus e Kibana possuem acesso livre. 
