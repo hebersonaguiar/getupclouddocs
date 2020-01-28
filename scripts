@@ -72,9 +72,12 @@ networking:
 apiVersion: kubeadm.k8s.io/v1beta2
 kind: InitConfiguration
 localAPIEndpoint:
-  advertiseAddress: "10.128.0.14"
+  advertiseAddress: "10.128.0.39"
   bindPort: 6443
 EOF
+
+
+kubeadm init --config '/root/kubeadm-config.yml' --upload-certs
 
 
 Your Kubernetes control-plane has initialized successfully!
@@ -91,9 +94,9 @@ Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
 
 You can now join any number of the control-plane node running the following command on each as root:
 
-  kubeadm join 10.128.0.13:6443 --token k2ah4a.3qa1ztva9vo63911 \
-    --discovery-token-ca-cert-hash sha256:309da9845e6db6f607104b283130a12df48781dc088f6f3d7b07984d9dcd63c5 \
-    --control-plane --certificate-key 6c1df2fa6dfb4b0c984c4253fb0de1afc864864814abd257577fc6ea1fbabb4f
+  kubeadm join 10.128.0.13:6443 --token 2wkrhv.pcdpe7qoc3z9e3j2 \
+    --discovery-token-ca-cert-hash sha256:40a70e4054a6670bfc22bc7b975e6ec1a0e0a9b749c8d14a5df251f18f30509b \
+    --control-plane --certificate-key b94cd6eb79955a7fde00a4d91fab2a54f8bddee8dbcad14cd0b60ceb8bb292d6
 
 Please note that the certificate-key gives access to cluster sensitive data, keep it secret!
 As a safeguard, uploaded-certs will be deleted in two hours; If necessary, you can use
@@ -101,9 +104,8 @@ As a safeguard, uploaded-certs will be deleted in two hours; If necessary, you c
 
 Then you can join any number of worker nodes by running the following on each as root:
 
-kubeadm join 10.128.0.13:6443 --token k2ah4a.3qa1ztva9vo63911 \
-    --discovery-token-ca-cert-hash sha256:309da9845e6db6f607104b283130a12df48781dc088f6f3d7b07984d9dcd63c5
-
+kubeadm join 10.128.0.13:6443 --token 2wkrhv.pcdpe7qoc3z9e3j2 \
+    --discovery-token-ca-cert-hash sha256:40a70e4054a6670bfc22bc7b975e6ec1a0e0a9b749c8d14a5df251f18f30509b
 
 bash <<EOF
 # Lembre-se de executar nos outros masters!
@@ -126,6 +128,182 @@ cat > /etc/docker/daemon.json <<EOF
 }
 EOF
 
-echo "KUBELET_EXTRA_ARGS='--node-ip=10.138.0.3'" > /etc/default/kubelet
+echo "KUBELET_EXTRA_ARGS='--node-ip=10.128.0.18'" > /etc/default/kubelet
 echo "KUBELET_EXTRA_ARGS='--node-ip=10.150.0.3'" > /etc/default/kubelet
 echo "KUBELET_EXTRA_ARGS='--node-ip=10.142.0.3'" > /etc/default/kubelet
+
+
+node-role.kubernetes.io/master: ""
+key: node-role.kubernetes.io/master
+
+
+blackpanthersud.us-central1-a.c.getupcloud-266101.internal
+
+EXECUTAR EM TODOS OS MASTERS
+cd /opt
+wget https://get.helm.sh/helm-v2.16.1-linux-amd64.tar.gz
+tar -zxvf helm-v2.16.1-linux-amd64.tar.gz
+mv linux-amd64/helm /usr/local/bin/helm
+
+
+APENAS EM UM MASTER
+kubectl -n kube-system create serviceaccount tiller
+
+kubectl create clusterrolebinding tiller \
+  --clusterrole=cluster-admin \
+  --serviceaccount=kube-system:tiller
+
+helm init --service-account tiller
+
+result
+Creating /root/.helm 
+Creating /root/.helm/repository 
+Creating /root/.helm/repository/cache 
+Creating /root/.helm/repository/local 
+Creating /root/.helm/plugins 
+Creating /root/.helm/starters 
+Creating /root/.helm/cache/archive 
+Creating /root/.helm/repository/repositories.yaml 
+Adding stable repo with URL: https://kubernetes-charts.storage.googleapis.com 
+Adding local repo with URL: http://127.0.0.1:8879/charts 
+$HELM_HOME has been configured at /root/.helm.
+
+Tiller (the Helm server-side component) has been installed into your Kubernetes Cluster.
+
+Please note: by default, Tiller is deployed with an insecure 'allow unauthenticated users' policy.
+To prevent this, run `helm init` with the --tiller-tls-verify flag.
+For more information on securing your installation see: https://docs.helm.sh/using_helm/#securing-your-helm-installation
+
+
+
+kubectl -n kube-system  rollout status deploy/tiller-deploy
+
+helm version --short
+Client: v2.16.1+gbbdfe5e
+Server: v2.16.1+gbbdfe5e
+
+
+kubectl create ns observability
+helm install --name prometheus --namespace observability --set alertmanager.persistentVolume.enabled=false,server.persistentVolume.enabled=false,alertmanager.service.type=NodePort,server.service.type=NodePort stable/prometheus
+
+helm install --name grafana --namespace observability --set service.type=NodePort stable/grafana
+
+kubectl get secret --namespace observability grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+usuario admin
+senha yXRXQ3RFb143zGf7bq4N2v6phlfI2rUKjsKo2X3V
+
+helm repo add elastic https://helm.elastic.co
+
+helm install --name elasticsearch --namespace observability --set persistence.enabled=false elastic/elasticsearch
+
+helm install --name kibana --namespace observability --set service.type=NodePort elastic/kibana
+
+helm install --name metricbeat --namespace observability elastic/metricbeat
+
+curl 10.96.65.203:9200/_cat/indices
+
+root@jerry:~# curl 10.96.65.203:9200/_cat/indices
+green open .kibana_task_manager_1             pT385wScSPy2Lj2f_NqBQg 1 1    2 6 85.8kb 42.8kb
+green open .apm-agent-configuration           Z7cauCFnTO6Jmc8NfP-OeQ 1 1    0 0   460b   230b
+green open metricbeat-7.5.2-2020.01.28-000001 XWdEBK2kQheNFhvSbBISxg 1 1 1634 0  3.7mb  1.6mb
+green open .kibana_1                          4qPaLHhdRnCrNtGU_l0qEQ 1 1    7 1 58.3kb 29.1kb
+
+https://logz.io/blog/deploying-the-elk-stack-on-kubernetes-with-helm/
+
+cat > /opt/voting-app/k8s-rbac-dev/serviceaccount-dev.yaml <<EOF
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: readonlyuser
+  namespace: default
+EOF
+
+cat > /opt/voting-app/k8s-rbac-dev/clusterrole-dev.yaml <<EOF
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: readonlyuser
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - services
+  - nodes
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - daemonsets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extensions
+  resources:
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+EOF
+
+cat > /opt/voting-app/k8s-rbac-dev/clusterrolebinding-dev.yaml <<EOF
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: readonlyuser
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: readonlyuser
+subjects:
+- kind: ServiceAccount
+  name: readonlyuser
+  namespace: default
+EOF
+
+
+
+kubectl create serviceaccount readonlyuser
+
+kubectl create clusterrole readonlyuser --verb=get --verb=list --verb=watch --resource=pods --resource=daemonset --resource=services --resource=ingresses --resource=nodes
+
+kubectl create clusterrolebinding readonlyuser --serviceaccount=default:readonlyuser --clusterrole=readonlyuser
+
+TOKEN=$(kubectl describe secrets "$(kubectl describe serviceaccount readonlyuser | grep -i Tokens | awk '{print $2}')" | grep token: | awk '{print $2}')
+
+
+kubectl config set-credentials desenvolvedor --token=$TOKEN
+
+kubectl config set-context devreader --cluster=kubernetes --user=desenvolvedor
+
+
+kubectl --context=devreader get pods
+
+dev
+cat > ~/.kube/config <<EOF
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN5RENDQWJDZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRJd01ERXlPREF3TkRZMU1Wb1hEVE13TURFeU5UQXdORFkxTVZvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTkhlClo0QnIzdnhTUE5XZE5MSnc3QXVUM3dSY2dKNGtOcDBjLzRvN0pFRnRNUjRhMUdSdW1rZ29IM2lPU2pxWVFpMFQKR2V6SVBRY242c0lkcHl1aWxuMXljdXZ6NFpzNS9TQlNxOFBPeUtLSzhlQ1FsbEdTMUZyZzJxVU9OT1M4SXl4Ngo3QkpDamZJdnFwaWlZUkZxSjhWUFZxd2hXQWRyTW1kR2ViWWhDMi93cVloZVlHVmtoQWYrY3JFcTZ1d3hBNGhCCjZkSnNRNnZSZXkwN3RhVTlWVjdYWnhzNXpKWFgvUjdTSUQvc2d6bXZJaHNWOUJjNU5EMjdZQnU2SitHemoxMEsKR3FOYXVTempON2loOGtHNFRtcHVrVFdqY1d5OExkNWE5SlR1T3QxY2QycFNUTGlFNE1qZWFneWF4cVB5amphRQoyOUZ1bnVUcWUrbnBjZ0VlL0ZjQ0F3RUFBYU1qTUNFd0RnWURWUjBQQVFIL0JBUURBZ0trTUE4R0ExVWRFd0VCCi93UUZNQU1CQWY4d0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFGVGVTVzR2RGpPNHZLRjZjV1RXalNhZ21OSGEKbjQ2SVNqcUNrRzRLUlhrd2RQdENTRHU1MnR0L2FaZHN0QjlpdEpxVzBhSm5RY211WklmOW4vL1RvZWVWSkRCQgorQ3NPazRuTm42UDBJbU9yaE5BMnJENDZVeWNOZmJSbHVMMWZEbk1Eczg1VWJFY2lHdTZPcUlaV0ZMY2Z2MlE1ClVaSUFDNHh0SlpjQS9xbldrMWlhODhWWUFuelA1MDZCZ3pVZ3pyeC9vTVoyWFg5Q0NmOFdpVGJ6UWR3c2JJTFcKUDluZHV2Tk9obXNNRWRCR2pXTUpPdzVUZmIyVmQrV2QxNzkxYVQrR3RCVDlBRVdIa3gxeENVYVdJVkdFeXB6dApZS2dEVmpyZVZkWGVONEN5UC9tU0tMRVJ3ZHYvTmFWMk1rdEZDQTBEYmRES1dXTDA2SWF6bXdxZGdxdz0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+    server: https://10.128.0.13:6443
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    user: desenvolvedor
+  name: devreader
+current-context: devreader
+kind: Config
+preferences: {}
+users:
+- name: desenvolvedor
+  user:
+    token: eyJhbGciOiJSUzI1NiIsImtpZCI6ImpuQjBZWXJad2ZqQm53bWJBc2hPSVl1XzZ6bG1sYkIySHJFajlpMHVsWTAifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6InJlYWRvbmx5dXNlci10b2tlbi02cnB2OSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJyZWFkb25seXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiI5Njg3NWIzYy02YmE4LTQwZTUtYTcxYy0xNWExNDYzNGJkZWEiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6ZGVmYXVsdDpyZWFkb25seXVzZXIifQ.D3p-SOBdSXRTfI4XtiHrTdu1IaWEWn-5PWOpf2E0s4pH4ED-vMgdj3aiagxZ-a6et8LYsFcPdVBEu85ZFiTYTiPNMNBotd0VQdwtfBCChNaW4iWe276Gbf1mTHzYq9C6VuOJrfzw7CRnkLOvc-xoYfbR1CAcuw7Np9PwiHcUEKwtRo2tnF1aupEjmvIQPnh9Lv2n4WmmcBqzcy_w3_0RADpWnoOYvN-tsflEkR5By3y2uLWs3j7kiX3rU5zHBJ_J6Eizkb9xInBIpYUQnvsWeDkhKfhBsmJYf766LEjPXxagBa1-tRzkKF3SI1j2Rv4fw7ct7G16Qv92_1uvzMLDtA
+    client-key-data: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcFFJQkFBS0NBUUVBMjBaUmZHL2tUbE1YRHFiWDJ5YWNDdWJ0b0hvZ0x2OVZJQ2VhSUVwUFUwVlIraTZDCjFyUnNqUFpMOXlSRDIwZ0RudU50N3dwQmhGaXZkNHNKVGpqOGdsRTRxZTlIY2FpR1hjbzdDR0RVTC9YUndqSVYKejlSZC9nLzFyZVJDVDB3M3FBc1Ftd2ZqblZiZk9MWW1VekhjMGMvQysxU3VoU2xscXA0S2FtN05iZVg4WGp3TQpjZ0pHRldmbUU1eEVGaXh6UmNheWQ5Q3NGckVTby8rdy8zb0dnZFovYVFiaFVWU0hPUG9iVVZ1Z3JsQVR0N0xhCmhOTnRucm9sbjk5WEpuaURheVV0ajFpWDJSQ3F5aVgwaEMxanpSeVg3UmNKNmR5ZFB2TDVhQW5KcFJwTWFkalMKMXlEQnFHVnZvcjc5ODhLQkdZdjBaTWhPTFEwMzlkT2t0dGMvRlFJREFRQUJBb0lCQVFDZEFsSHd4M0h6LzUwZgorYW5RbTJuYWlKYVlkVG84VE1wWWR1THV3aWJnMmw4anhGQWRpeDI3SmRVcFJ3ZHJxYm9sK0hYTVYweW9ocFJHCkJnR0l5RmRPdlBmVS9xZnFvNkJxNGhhNUhoUnhyeFFlZUp5VHIxNEtRTVZMV1lsOW5IYXgxaEp5NEFoRXJtS3kKQ2dPUlNMLzBZRThlaGZsZEVsSmhCRDh6RE5uK0dQOHZGTWZiWUpoTHBkWXRES0RPdFduOVF0QlhsTWVTemI4UQplOGo1ZmtMRTMrQXA4RzB3T1dFT3o0RFBWSjlyZ0I1aXliNndld0Q4dUpMa05UOXpLUFNaLzNLbThEbHZXSTk5CjNmeStQdGgwZm1IcXRITTI4Rkx3UU1yWVNWbHBCNXRQRm1HZXJCN0FNSVZWVVVOZTdvNm9EN3NzLzU1cVdJWHYKeUhwS01kV1ZBb0dCQVAydEZUbzh2aEZaaVBCSmp1UEcyYVdBQklOVlM2b3NpY2RLWXVUa2pXTG1lRnNweVBsVQo4MnIyUVpmVlVvNlFVUkpRTS9jNjNkZ2lWSmIyNTN0cHZSaXQxaFVOMUlKMHRIV0I0amxhdlQzb05ybExTdGV3ClBNMjFxcmpEODRiOEN2ZkxuN2pEQVhER1lxRVJZN05mV0ZVaUg4cWt1NU5WYXFFNlZOSE9CUjFyQW9HQkFOMUkKanNiOXZCSTd2STlndlRZdFNBSnE4S2pxbU1nek50Nnd4Rkxod0hIRnJPWTNUbjY0LzREQnZReU1vNUkzcVFmbQo2MTUwLzJscmJ1U3pzVWtGU21QbzVCVFZHTlNvRTUyWEk4OFZVajBFYUpUWDZYc0hkeWlaKzNsdUZZVW5HcVNZCkdwcGRYY21iUnJ1MFRpcnBLRS8zeldGZnJDR0VNUU9GSEFSMHc3Vi9Bb0dBRjVHaVBFUHlnTmdwd2ZHRHBpUU8KaXJMbk9IQ1BWQ05KTmN2eWZrUEI0eU40b1RlenBYN0FFdnNJUXh3ZHpJTWFGVEtBY1lMMW82UWs2ZFhNMGdtVAorUndGblBVby9tbnJibE4vK2tZMCtQQi9UUjN5dVRGMXBNTXhObk4yUjk5WkFZYllzeWpqRkdCS1A1N0cvWjVwCkxaZTdEbS9ad2FtWSs1dll6NWx0bmpzQ2dZRUFxdEM5MW9JNzBkOW5HVTdXQUtKSHVnWVBMSFdiNXI4U0ZpbGkKQTVEYzIzWjZsMlFPSmVoczQxbXFzNnRGQVRRU09WVmFUNW9GSjcyVTV0cUhlaFNwYmlKekhsbTVSejlQbFJEOAp4WGh4K1VRVDd3SVU2N0hCbkFmeGhiVWl5NXg2QnFDYnVKbG1NcUM0bzJEMkRrM1pucEZ0YTBOTlByb3FrOHNHCjY3R3UrY1VDZ1lFQW1lNkFzc0x4Y2Q4Q1VZRnQxZkdmaHJkRUkwclZmL09LZXZkQWszaXdhM3l5SjdnOVJsRDEKS255MDhaSmZmS2hWNVhWZnhROThPcFV6bmkwU0kvVG83dmZaMVVIWW1md0tsOVdTNHBpdUFlcGlsNkJVZVhNRApZcW12RDBWeTZ5MkVmVGFIVnFsL1g4TzVCVHJlbU9ZOUd5aUtrdld6Yk1FNnZvSmRJV3EzZFJJPQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
+EOF
