@@ -112,7 +112,9 @@ As instâncias foram criadas com as seguintes configurações:
 
 Hosts `tom`, `jerry`, `haproxy`, `charliebrown` foram criadas na zona `us-central-a` com 2 vCPUs, 7,5 GB de memória (n1-standard-2);
 
-Host `pernalonga`, foi criada na zona `us-west2-c` com 1 vCPUs, 3,75 GB de memória (n1-standard-1);
+Host `pernalonga`, foi criada na zona `us-west1-a` com 2 vCPUs, 7,5 GB de memória (n1-standard-2);
+
+Host `popeye`, foi criada na zona `us-east1-a` com 2 vCPUs, 7,5 GB de memória (n1-standard-2);
 
 Host `patolino`, foi criada na zona `us-west2-c` com 1 vCPUs, 3,75 GB de memória (n1-standard-1);
 
