@@ -77,7 +77,7 @@ Google Cloud:
 
 `Usuário: hebersonaguiar.ti@gmail.com`
 
-`Senha: yXRXQ3RFb143zGf7bq4N2v6phlfI2rUKjsKo2X3V`
+`Senha: 0pAP6Edu87HRD1XLpZ`
 
 Vote, Result, Prometheus e Kibana possuem acesso livre. 
 
