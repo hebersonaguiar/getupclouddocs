@@ -20,7 +20,7 @@ Para esse desafio foram utilizados as seguintes tecnologias:
 
 [HAproxy](https://github.com/hebersonaguiar/getupclouddocs#haproxy)
 
-[Ansible](https://github.com/hebersonaguiar/getupclouddocs#ansbile)
+[Ansible](https://github.com/hebersonaguiar/getupclouddocs#ansible)
 
 [Kubernetes](https://github.com/hebersonaguiar/getupclouddocs#kubernetes)
 
