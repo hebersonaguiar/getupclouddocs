@@ -929,7 +929,7 @@ server {
 EOF
 ```
 
-Os arquivos acima estão em `files/nginx`
+Os arquivos acima estão em `files/nginx`. Os ips configurados nos vhosts são dos workes do cluster kubernetes.
 
 Verificação de sintaxe
 
