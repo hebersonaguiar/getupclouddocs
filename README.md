@@ -10,7 +10,7 @@ Esse reposítório foi criado para servir de complementação à documetação d
 
 
 ## A proposta
-A proposta desse projeto é de em base ao repositório [Example Voting App](https://github.com/dockersamples/example-voting-app) que foi repassado pela GetUp Cloud, criar um cluster Kubernetes ser que seja um serviço gerenciado e fazer com que a aplicação funcione corretamente no cluster, criar dois usuários de acesso um admin e outro coma acesso limitado e como bônus foi configurado o monitoramento e os logs centralizados.
+A proposta desse projeto é de em base ao repositório [Example Voting App](https://github.com/dockersamples/example-voting-app) que foi repassado pela GetUp Cloud, criar um cluster Kubernetes sem que seja um serviço gerenciado e fazer com que a aplicação funcione corretamente no cluster, criar dois usuários de acesso um admin e outro coma acesso limitado e como bônus foi configurado o monitoramento e os logs centralizados.
 
 Para esse desafio foram utilizados as seguintes tecnologias:
 
