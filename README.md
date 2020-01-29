@@ -357,6 +357,8 @@ Para verificar a inclusão do cluster execute o comando abaixo e você verá doi
 kubectl get nodes
 ```
 
+![nodes-masters](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/nodes-masters.png)
+
 Para incluir os workers acesse todos os servidores desiguinados como workers:
 
 ```bash
