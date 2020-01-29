@@ -459,7 +459,7 @@ EOF
 kubectl create -f clusterrolebinding-dev.yaml 
 ```
 
-Configurações RBAC realizadas, iremos agora configurar o acesso do usuário `desenvolvedor` no cluster:
+Os arqvuivos de configuração RBAC estão em `files/voting-app/k8s-rbac-dev/config-dev`. Configurações RBAC realizadas, iremos agora configurar o acesso do usuário `desenvolvedor` no cluster:
 
 Recuperando Token do Service Account
 
