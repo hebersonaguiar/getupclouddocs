@@ -114,7 +114,7 @@ Para esse projeto foi utilizada criado uma conta no onde os acessos foram inform
 
 * [Cloud DNS](https://github.com/hebersonaguiar/getupclouddocs#google-cloud-plataform), onde foi utilizado o domínio `hebersonaguiar.me` apontando os momes das aplicações para os serviços de entrada de requisição, e também os DNS dos servidores.
 
-* [Compute Engine](https://github.com/hebersonaguiar/getupclouddocs#google-cloud-plataform), onde foi criado as intâncias de vm do cluster composto por 2 master, 4 workers e 1 haproxy e nginx. A criação das instâncias foram feitas manualmente, devido a divisão do cluster em relação ao tempo, ou seja, para criação utilizando como por exemplo `terraform` iria levar mais tempo para criar os arquivos e configurações do que criar manualmente pois as instâncias foram dividias em zonas e tipo.
+* [Compute Engine](https://github.com/hebersonaguiar/getupclouddocs#google-cloud-plataform), onde foi criado as intâncias de vm do cluster composto por 2 master, 4 workers e 1 haproxy e nginx. A criação das instâncias foram feitas manualmente, devido a divisão do cluster em relação ao tempo, ou seja, para criação utilizando como por exemplo `terraform` iria levar mais tempo para criar os arquivos e configurações do que criar manualmente pois as instâncias foram dividias em zonas e tipos.
 
 * [Kubernetes](https://github.com/hebersonaguiar/getupclouddocs#kubernetes), utilizado para criar o cluster do Kubernetes. Nesse projeto foi criado um cluster multi-master para que possa garantir a disponibilidade do cluster caso um dos master pare de funcionar. Foi também utilizado o `kubeadm` para criação do cluster, as informações de criação de configuração do cluster estão na seção [Kubernetes](https://github.com/hebersonaguiar/getupclouddocs#kubernetes)
 
@@ -135,7 +135,7 @@ Host `patolino`, foi criada na zona `us-west2-c` com 1 vCPUs, 3,75 GB de memóri
 
 Para criação do cluster kubernetes do tipo multi-cluster é necessário algum tipo de load balancer, seguindo a documentação oficial é possível utilizar um Load Balancer de algum cloud provider como GCP ou AWS ou um HAproxy, nesse projeto iremos utilizar o HAproxy, para isso segue abaixo o passo-a-passo as configurações:
 
-Acesso ao servidor `haproxy.hebersonaguiar.me`
+Acesso o servidor `haproxy.hebersonaguiar.me`
 
 ```bash
 ssh -i <path-cahve_ssh/id_rsa> -l hebersonaguiar_ti haproxy.hebersonaguiar.me
@@ -200,7 +200,7 @@ Para criação do cluster foram utilizados as seguintes configurações:
 
 Configuração de sistema operacional, docker, kernel, instalação de pacotes:
 
-Acesse aos servidores
+Acesse todos servidores desiguinados ao cluster kubernetes
 
 ```bash
 ssh -i <path-cahve_ssh/id_rsa> -l hebersonaguiar_ti <nome-do-servidor>
@@ -223,7 +223,6 @@ Atualização e instalação de pacotes docker e kubernetes
 
 ```bash
 bash <<EOF
-# Lembre-se de executar nos outros masters!
 apt-get update
 apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common vim
 curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
@@ -247,7 +246,7 @@ cat > /etc/docker/daemon.json <<EOF
 EOF
 ```
 
-Após as configurações é necessário a reinicializaão dos servidores para que os módulos de kernel seja habilitados e as alterações tenham efeitos:
+Após as configurações é necessário a reinicialiaão dos servidores para que os módulos de kernel seja habilitados e as alterações tenham efeitos:
 
 ```bash
 reboot
@@ -261,7 +260,7 @@ Acesse um dos servidores desiguinados como master, nesse casso foi utilizado inc
 ssh -i <path-cahve_ssh/id_rsa> -l hebersonaguiar_ti tom.hebersonaguiar.me
 ```
 
-Para iniciar o cluster através do kubeadm é preciso criar um arquivo que indicará onde está o load balancer bem como qual o endereço de rede utilizaremos tanto para a máquina como para os containers, segue abaixo:
+Para iniciar o cluster através do kubeadm é preciso criar um arquivo que indicará onde está o load balancer bem como o endereço de rede utilizaremos tanto para a máquina como para os containers, segue abaixo:
 
 ```bash
 cat > /root/kubeadm-config.yml <<EOF
@@ -317,7 +316,7 @@ kubeadm join 10.128.0.13:6443 --token 2wkrhv.pcdpe7qoc3z9e3j2 \
     --discovery-token-ca-cert-hash sha256:40a70e4054a6670bfc22bc7b975e6ec1a0e0a9b749c8d14a5df251f18f30509b
 ```
 
-Iniciado o cluster é necessário configurar o arquivo de conexão ao cluster:
+Iniciado o cluster é necessário configurar o arquivo de conexão:
 
 ```bash
 mkdir -p $HOME/.kube
