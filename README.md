@@ -22,6 +22,8 @@ Para esse desafio foram utilizados as seguintes tecnologias:
 
 [Kubernetes Engine](https://github.com/hebersonaguiar/getupclouddocs#kubernetes)
 
+[Vote App](https://github.com/hebersonaguiar/getupclouddocs#vote-app)
+
 [Helm Chart](https://github.com/hebersonaguiar/getupclouddocs#helm-chart)
 
 [GitHub](https://github.com/hebersonaguiar/getupclouddocs#github)
@@ -372,9 +374,44 @@ kubeadm join 10.128.0.13:6443 --token 2wkrhv.pcdpe7qoc3z9e3j2 \
 Aguarde alguns segundos, execute o comando abaixo e você verá alguns servidores sem role definida e o status `Ready`, agora temos um cluster com dois masters e quatro workers.
 
 
+## Voting App
+
+Como informado no início desse repositório, foi solicitado que a aplicação [Example Voting App](https://github.com/dockersamples/example-voting-app) funcionasse em um ambiente de cluster kubernetes, dessa forma já temos um cluster kubernetes pronto e iremos configurar aplicação, para isso primeiro iremos criar o namespace chamado `vote`:
+
+```bash
+cat > vote-namespace.yaml <<EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vote
+EOF
+```
+
+Antes de iniciar a aplicação deve-se informar que os `Deployments` oringinais `vote`, `result` e `worker` foram alterados para `DaemonSet` para que cada worker possua um pod de cada umas das aplicações informadas, isso faz com que o Load Balancer criado com [Nginx](https://github.com/hebersonaguiar/getupclouddocs#nginx) funcione corretamente.
+
+Para iniciar a aplicação baixe os arquivos desse repositório em um dos masters:
+
+```bash
+git clone https://github.com/hebersonaguiar/getupclouddocs.git
+```
+
+Inicie a aplicação com o comando abaixo:
+
+```bash
+kubectl create -f files/voting-app/k8s-voting/
+```
+
+Realizado o comando acima, serão inicializados, `replicaset`, `deployment`, `daemonset`, `service` e os `pods` das aplicações `vote`, `result`, `worker` da base de dados e do redis, como mostra a imagem abaixo:
+
+![votingapp](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/voting-app.png)
+
+Como mostra a imagem acima, temos dois serviços do tipo `NodePort` que são das aplicações `vote` e `result`, ou seja, o acessos dessas aplicações podem ser acessadas diretamente dos nós workers nas portas `31000` e `31001` respectivamente. Essas portas serão configuradas futuramente no Load Balancer do [Nginx](https://github.com/hebersonaguiar/getupclouddocs#nginx) e iremos acessar e poder brincar com a aplicações.
+
 
 ## Helm Chart
 O Helm Chart é um gerenciador de aplicações Kubernetes onde cria, versiona, compartilha e pública os artefatos. Com ele é possível desenvolver templates dos arquivos YAML e durante a instalação de cada aplicação personalizar os parâmentros com facilidade. 
+
+Nesse projeto o helm chart foi utilizado
 
 Nesse projeto o helm chart foi utilizado nos repositórios das aplicações [Frontend](https://github.com/hebersonaguiar/ditochatfrontend/tree/master/charts/ditochatfrontend) e [Backend](https://github.com/hebersonaguiar/ditochatbackend/tree/master/charts/ditochatbackend), no qual foi emcapsulado todos os arquivos necessários para a implantação das aplicações, como deployment, service, persistente volume, etc, um template padrão de uma aplicação é a seguinte:
 
