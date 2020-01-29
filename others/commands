@@ -1,26 +1,8 @@
-https://blog.4linux.com.br/kubernetes-configurando-um-cluster-multi-master/
-
-sed -e "s/cgroup-driver=systemd/cgroup-driver=cgroupfs/g" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
-
-kubeadm join 10.128.0.2:6443 --token gxycgw.l5r1zqxau52ern6y \
-    --discovery-token-ca-cert-hash sha256:9fafd8802b55bb1d22b6f59722fe3512cfafdb854e0e3f2100de40268653d3a8
-
-
-kubeadm join 10.128.0.2:6443 --token gxycgw.l5r1zqxau52ern6y \
-    --discovery-token-ca-cert-hash sha256:9fafd8802b55bb1d22b6f59722fe3512cfafdb854e0e3f2100de40268653d3a8 \
---control-plane --certificate-key c15d7c091fbbef93b3665b30d16e587fb37c1481f301bc11dc05cb27442c8181 --apiserver-advertise-address=10.128.0.4
-
-
 mkdir -p $HOME/.kube
 cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config
 
 kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
-
-34.107.139.115:443
-
-
-kubeadm init --control-plane-endpoint "loadbalancer.hebersonaguiar.me:443" --upload-certs
 
 
 cat > /etc/modules-load.d/k8s.conf <<EOF
