@@ -20,9 +20,9 @@ Para esse desafio foram utilizados as seguintes tecnologias:
 
 [HAproxy](https://github.com/hebersonaguiar/getupclouddocs#haproxy)
 
-[Kubernetes Engine](https://github.com/hebersonaguiar/getupclouddocs#kubernetes)
+[Kubernetes](https://github.com/hebersonaguiar/getupclouddocs#kubernetes)
 
-[Vote App](https://github.com/hebersonaguiar/getupclouddocs#vote-app)
+[Voting App](https://github.com/hebersonaguiar/getupclouddocs#voting-app)
 
 [Helm Chart](https://github.com/hebersonaguiar/getupclouddocs#helm-chart)
 
