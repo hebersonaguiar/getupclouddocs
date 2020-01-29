@@ -493,6 +493,14 @@ Check de permissões do usuário `desenvolvedor`
 
 Como informado no início desse repositório, foi solicitado que a aplicação [Example Voting App](https://github.com/dockersamples/example-voting-app) funcionasse em um ambiente de cluster kubernetes, dessa forma já temos um cluster kubernetes pronto e iremos configurar aplicação, para isso primeiro iremos criar o namespace chamado `vote`:
 
+Acesse um dos masters: 
+
+```bash
+ssh -i <path-cahve_ssh/id_rsa> -l hebersonaguiar_ti tom.hebersonaguiar.me
+```
+
+Crie o namespace:
+
 ```bash
 cat > vote-namespace.yaml <<EOF
 apiVersion: v1
@@ -507,11 +515,7 @@ kubectl create -f vote-namespace.yaml
 
 Antes de iniciar a aplicação deve-se informar que os `Deployments` oringinais [vote](https://vote.hebersonaguiar.me), [result](https://result.hebersonaguiar.me) e [worker]((https://worker.hebersonaguiar.me)) foram alterados para `DaemonSet` para garantir que cada worker possua um pod de cada umas das aplicações informadas, isso faz com que o Load Balancer criado com [Nginx](https://github.com/hebersonaguiar/getupclouddocs#nginx) funcione corretamente.
 
-Para iniciar a aplicação baixe os arquivos desse repositório em um dos masters, nesse caso foi realizdo dentro do master `tom.hebersonaguiar.me`:
-
-```bash
-ssh -i <path-cahve_ssh/id_rsa> -l hebersonaguiar_ti tom.hebersonaguiar.me
-```
+Para iniciar a aplicação baixe os arquivos desse repositório em um dos masters, nesse caso foi realizdo dentro do master `tom.hebersonaguiar.me`.
 
 ```bash
 git clone https://github.com/hebersonaguiar/getupclouddocs.git
