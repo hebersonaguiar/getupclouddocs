@@ -693,7 +693,7 @@ Pronto, agora basta acessar o [Kibana](http://kibana.hebersonaguiar.me), configu
 
 ## Nginx
 
-Para esse projeto foi utilizado o NGiNX como proxy e load balancer das aplicações [vote](https://vote.hebersonaguiar.me), [result](https://result.hebersonaguiar.me) [prometheus](https://prometheus.hebersonaguiar.me), [alertmanager](https://alertmanager.hebersonaguiar.me), [Kibana](http://kibana.hebersonaguiar.me) e o [grafana](http://grafana.hebersonaguiar.me)
+Para esse projeto foi utilizado o NGiNX como proxy e load balancer das aplicações [vote](https://vote.hebersonaguiar.me), [result](https://result.hebersonaguiar.me) [prometheus](https://prometheus.hebersonaguiar.me), [alertmanager](https://alertmanager.hebersonaguiar.me), [kibana](http://kibana.hebersonaguiar.me) e o [grafana](http://grafana.hebersonaguiar.me)
 
 Para configurar foi realizado os seguintes passos:
 
@@ -926,6 +926,8 @@ server {
 }
 EOF
 ```
+
+Os arquivos acima estão em `files/nginx`
 
 Verificação de sintaxe
 
