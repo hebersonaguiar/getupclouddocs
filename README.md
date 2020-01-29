@@ -443,20 +443,7 @@ Client: v2.16.1+gbbdfe5e
 Server: v2.16.1+gbbdfe5e
 ```
 
-Antes das instalação iremos criar o ` namespace` que irá alocar nossas aplicações de minitoramento e logs:
 
-```bash
-kubectl create ns observability
-``` 
-
-Primeira aplicação a ser iniciada é o [prometheus](https://prometheus.hebersonaguiar.me), [alertmanager](https://alertmanager.hebersonaguiar.me), no qual são inciadas juntas, nelas serão configuradas a porta de serviço como `NodePort` e desabilitar o persistente volume, segue abaixo a instalação:
-
-```bash
-helm install --name prometheus --namespace observability --set \
-	alertmanager.persistentVolume.enabled=false,server.persistentVolume.enabled=false, \
-	alertmanager.service.type=NodePort,server.service.type=NodePort \
-	stable/prometheus
-```
 
 Próxima aplicação a ser iniciada é o [grafana](https://grafana.hebersonaguiar.me), no qual irá se conectar ao prometheus e vai nos trazer as métricas do ambiente como uso de disco, memória, cpu, etc, tudo em um dashboard que iremos configurar posteriormente, para iniciar iremos configuar apenas o serviço como n`NodePort`:
 
@@ -499,34 +486,29 @@ helm install --name metricbeat --namespace observability elastic/metricbeat
 ## GitHub
 GitHub é uma plataforma de hospedagem de código-fonte com controle de versão usando o Git. Ele permite que programadores, utilitários ou qualquer usuário cadastrado na plataforma contribuam em projetos privados e/ou Open Source de qualquer lugar do mundo.
 
+Nesse projeto foi utilizado para os repositórios das aplicações [Vote](https://github.com/hebersonaguiar/vote), [Worker](https://github.com/hebersonaguiar/worker), [Result](https://github.com/hebersonaguiar/result) e para essa documentação [GetUp Cloud Docs](https://github.com/hebersonaguiar/getupclouddocs)
+
 ## Prometheus
 O Prometheus é um kit de ferramentas de monitoramento e alerta de sistemas de código aberto criado originalmente no SoundCloud. Desde a sua criação em 2012, muitas empresas e organizações adotaram o Prometheus, e o projeto possui uma comunidade de desenvolvedores e usuários muito ativa. Agora é um projeto de código aberto independente e mantido independentemente de qualquer empresa.
 
 Iremos utilizar nesse projeto o prometheus para coletar dados do cluster kubernetes bem como as aplicações, para sua instalação iremos utilizar o helm chart, por ser uma aplicação de terceiro e também por está mantida sua versão estável no repositório de charts no github, para sua instalação iremos utilizar o comando abaixo:
 
-* Criação de um namespace para o monitoramento e log (caso não exista)
+Antes das instalação iremos criar o ` namespace` que irá alocar nossas aplicações de minitoramento e logs:
 
 ```bash
-kubectl create namespace monitoring-log
-```
+kubectl create ns observability
+``` 
 
-* Instalação do prometheus
+Primeira aplicação a ser iniciada é o [prometheus](https://prometheus.hebersonaguiar.me), [alertmanager](https://alertmanager.hebersonaguiar.me), no qual são inciadas juntas, nelas serão configuradas a porta de serviço como `NodePort` e desabilitar o persistente volume, segue abaixo a instalação:
 
 ```bash
-helm install --name prometheus \
-	--set server.persistentVolume.enabled=false,alertmanager.persistentVolume.enabled=false \
-	--namespace monitoring-log \
+helm install --name prometheus --namespace observability --set \
+	alertmanager.persistentVolume.enabled=false,server.persistentVolume.enabled=false, \
+	alertmanager.service.type=NodePort,server.service.type=NodePort \
 	stable/prometheus
 ```
 
-Após todos os serviços estarem funcionando, será necessário criar um ingress para o acesso externo, para isso iremos utilizar o comando abaixo:
-
-```bash
-kubectl create -f ingress-prometheus.yaml
-```
-O arquivo de configuação do ingress encontra-se em `conf/k8s/`
-
-[Prometheus](http://prometheus.ditochallenge.com/graph) em execução:
+[Prometheus](http://prometheus.hebersonaguiar.me/graph) em execução:
 
 ![prometheus](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/prometheus.png)
 
