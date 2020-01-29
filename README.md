@@ -32,7 +32,7 @@ Para esse desafio foram utilizados as seguintes tecnologias:
 
 [Grafana](https://github.com/hebersonaguiar/getupclouddocs#grafana)
 
-[ELK](https://github.com/hebersonaguiar/getupclouddocs#elk)
+[Elastic Stack](https://github.com/hebersonaguiar/getupclouddocs#elastic-stack)
 
 [Nginx](https://github.com/hebersonaguiar/getupclouddocs#nginx)
 
