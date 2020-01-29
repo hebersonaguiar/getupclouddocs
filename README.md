@@ -115,9 +115,9 @@ Google Cloud Platform também conhecida como GCP é uma suíte de cloud oferecid
 
 Para esse projeto foi utilizada criado uma conta onde os acessos foram informados anteriomente e o [Console](https://console.cloud.google.com/) pode ser acessado livremente para verificação dos recursos utilizados, entre eles Compute Engine, CLoud DNS etre outros.
 
-Os principais produtos que iremos utilizar são 
+Os principais produtos que iremos utilizar são:
 
-* [Cloud DNS](https://github.com/hebersonaguiar/getupclouddocs#google-cloud-plataform), onde foi utilizado o domínio `hebersonaguiar.me` apontando os momes das aplicações para os serviços de entrada de requisição, e também os DNS dos servidores.
+* [Cloud DNS](https://github.com/hebersonaguiar/getupclouddocs#google-cloud-plataform), onde foi utilizado o domínio `hebersonaguiar.me` apontando os momes das aplicações para os serviços de entrada de requisição, e também os DNS dos servidores, com ele também foi criado o certificado Let's Encrypt do tipo wildcard.
 
 * [Compute Engine](https://github.com/hebersonaguiar/getupclouddocs#google-cloud-plataform), onde foi criado as intâncias de vm do cluster composto por 2 master, 4 workers e 1 haproxy e nginx. A criação das instâncias foram feitas manualmente, devido a divisão do cluster em relação ao tempo, ou seja, para criação utilizando como por exemplo `terraform` iria levar mais tempo para criar os arquivos e configurações do que criar manualmente pois as instâncias foram dividias em zonas e tipos.
 
