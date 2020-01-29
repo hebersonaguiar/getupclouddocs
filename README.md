@@ -205,7 +205,7 @@ git clone https://github.com/hebersonaguiar/getupclouddocs.git
 Dentro da pasta `getupclouddocs/files/ansible/` possui os arquivos `hosts` onde contém todos os servidores do cluster kubernetes e o `docker-k8s-pkg.yaml` responsável por todas as pré configurações de instalação do cluster kubuernetes como os pacotes necessários, o docker, kubeadm, kubelet e kubectl, também possui as recomendações de kernel e de cgroup-driver do docker, para isso execute os comandos abaixo:
 
 ```bash
-ansible-playbook -i /opt/getupclouddocs/files/ansible/hosts  /opt/getupclouddocs/files/ansible/docker-k8s-pkg.yaml --private-key=<absolutepath-cahve_ssh/id_rsa> -u hebersonaguiar_tiansible-playbook -i /opt/getupclouddocs/files/ansible/hosts /opt/getupclouddocs/files/ansible/docker-k8s-pkg.yaml
+ansible-playbook -i /opt/getupclouddocs/files/ansible/hosts  /opt/getupclouddocs/files/ansible/docker-k8s-pkg.yaml --private-key=<absolute-path-cahve_ssh/id_rsa> -u hebersonaguiar_ti
 ```
 
 No final do processo os servidores serão reinciados para que as configurações tenham efeito, então aguarde uns 2 minutos e continue o restante das configurações.
