@@ -926,15 +926,3 @@ server {
 }
 EOF
 ```
-
-Verificação de sintaxe
-
-```bash
-nginx -t
-```
-
-Restart do serviço
-
-```bash
-systemctl restart nginx
-```
