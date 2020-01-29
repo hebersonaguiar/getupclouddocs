@@ -481,6 +481,10 @@ kubectl config set-context devreader --cluster=kubernetes --user=desenvolvedor
 
 Usuário e acessos configurado, foi então configurado o arquivo `~/.kube/config` do usuário `desenvolvedor` dentro do perfil de usuário, o arquivo de configuração está em `files/voting-app/k8s-rbac-dev/config-dev`
 
+Check de permissões do usuário `desenvolvedor`
+
+![dev-access](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/check-access-dev.png)
+
 ## Voting App
 
 Como informado no início desse repositório, foi solicitado que a aplicação [Example Voting App](https://github.com/dockersamples/example-voting-app) funcionasse em um ambiente de cluster kubernetes, dessa forma já temos um cluster kubernetes pronto e iremos configurar aplicação, para isso primeiro iremos criar o namespace chamado `vote`:
