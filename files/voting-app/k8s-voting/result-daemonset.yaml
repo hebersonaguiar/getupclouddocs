@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: result
+  name: result
+  namespace: vote
+spec:
+  selector:
+    matchLabels:
+      app: result
+  template:
+    metadata:
+      labels:
+        app: result
+    spec:
+      containers:
+      - image: hebersonaguiar/result 
+        name: result
+        ports:
+        - containerPort: 80
+          name: result
