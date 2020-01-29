@@ -374,6 +374,113 @@ kubeadm join 10.128.0.13:6443 --token 2wkrhv.pcdpe7qoc3z9e3j2 \
 Aguarde alguns segundos, execute o comando abaixo e você verá alguns servidores sem role definida e o status `Ready`, agora temos um cluster com dois masters e quatro workers.
 
 
+* Configuração de acesso limitado do usuário `desenvolvedor` 
+
+Para esse cluster foi configurado um acesso limitado para o usuário `desenvolvedor`, no qual o mesmo terá permissão apenas de `get`, `list`  e `watch` em alguns recursos do cluster, vamos configurar:
+
+Service Account:
+
+```bash
+cat > serviceaccount-dev.yaml <<EOF
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: readonlyuser
+  namespace: default
+EOF
+```
+
+```bash
+kubectl create -f serviceaccount-dev.yaml 
+```
+
+Cluster Role:
+
+```bash
+cat > clusterrole-dev.yaml.yaml <<EOF
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: readonlyuser
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - services
+  - nodes
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - daemonsets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extensions
+  resources:
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+EOF
+```
+
+```bash
+kubectl create -f clusterrole-dev.yaml.yaml 
+```
+
+Service Account:
+
+```bash
+cat > clusterrolebinding-dev.yaml <<EOF
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: readonlyuser
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: readonlyuser
+subjects:
+- kind: ServiceAccount
+  name: readonlyuser
+  namespace: default
+EOF
+```
+
+```bash
+kubectl create -f clusterrolebinding-dev.yaml 
+```
+
+Configurações RBAC realizadas, iremos agora configurar o acesso do usuário `desenvolvedor` no cluster:
+
+Recuperando Token do Service Account
+
+```bash
+TOKEN=$(kubectl describe secrets "$(kubectl describe serviceaccount readonlyuser | grep -i Tokens | awk '{print $2}')" | grep token: | awk '{print $2}')
+```
+
+Configurando Token para o usuário `desenvolvedor`
+
+```bash
+kubectl config set-credentials desenvolvedor --token=$TOKEN
+```
+
+Configurando contexto de acesso do usuário `desenvolvedor`
+
+```bash
+kubectl config set-context devreader --cluster=kubernetes --user=desenvolvedor
+```
+
+Usuário e acessos configurado, foi então configurado o arquivo `~/.kube/config` do usuário `desenvolvedor` dentro do perfil de usuário, o arquivo de configuração está em `files/voting-app/k8s-rbac-dev/config-dev`
+
 ## Voting App
 
 Como informado no início desse repositório, foi solicitado que a aplicação [Example Voting App](https://github.com/dockersamples/example-voting-app) funcionasse em um ambiente de cluster kubernetes, dessa forma já temos um cluster kubernetes pronto e iremos configurar aplicação, para isso primeiro iremos criar o namespace chamado `vote`:
