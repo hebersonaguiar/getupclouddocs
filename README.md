@@ -374,6 +374,9 @@ kubeadm join 10.128.0.13:6443 --token 2wkrhv.pcdpe7qoc3z9e3j2 \
 
 Aguarde alguns segundos, execute o comando abaixo e você verá alguns servidores sem role definida e o status `Ready`, agora temos um cluster com dois masters e quatro workers.
 
+```bash
+kubectl get nodes
+```
 
 * Configuração de acesso limitado do usuário `desenvolvedor` 
 
@@ -480,7 +483,7 @@ Configurando contexto de acesso do usuário `desenvolvedor`
 kubectl config set-context devreader --cluster=kubernetes --user=desenvolvedor
 ```
 
-Usuário e acessos configurado, foi então configurado o arquivo `~/.kube/config` do usuário `desenvolvedor` dentro do perfil de usuário, o arquivo de configuração está em `files/voting-app/k8s-rbac-dev/config-dev`
+Usuário e acessos configurado, foi então configurado o arquivo `~/.kube/config` do usuário `desenvolvedor` dentro do perfil nos servidores masters, o arquivo de configuração está em `files/voting-app/k8s-rbac-dev/config-dev`
 
 Check de permissões do usuário `desenvolvedor`
 
@@ -502,9 +505,13 @@ EOF
 kubectl create -f vote-namespace.yaml
 ```
 
-Antes de iniciar a aplicação deve-se informar que os `Deployments` oringinais [vote](https://vote.hebersonaguiar.me), [result](https://result.hebersonaguiar.me) e [worker]((https://worker.hebersonaguiar.me)) foram alterados para `DaemonSet` para que cada worker possua um pod de cada umas das aplicações informadas, isso faz com que o Load Balancer criado com [Nginx](https://github.com/hebersonaguiar/getupclouddocs#nginx) funcione corretamente.
+Antes de iniciar a aplicação deve-se informar que os `Deployments` oringinais [vote](https://vote.hebersonaguiar.me), [result](https://result.hebersonaguiar.me) e [worker]((https://worker.hebersonaguiar.me)) foram alterados para `DaemonSet` para garantir que cada worker possua um pod de cada umas das aplicações informadas, isso faz com que o Load Balancer criado com [Nginx](https://github.com/hebersonaguiar/getupclouddocs#nginx) funcione corretamente.
 
-Para iniciar a aplicação baixe os arquivos desse repositório em um dos masters:
+Para iniciar a aplicação baixe os arquivos desse repositório em um dos masters, nesse caso foi realizdo dentro do master `tom.hebersonaguiar.me`:
+
+```bash
+ssh -i <path-cahve_ssh/id_rsa> -l hebersonaguiar_ti tom.hebersonaguiar.me
+```
 
 ```bash
 git clone https://github.com/hebersonaguiar/getupclouddocs.git
