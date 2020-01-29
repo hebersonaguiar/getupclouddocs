@@ -192,7 +192,7 @@ Nesse projeto foi utilizado o kubernetes na versão stable `v1.17.2`, o cluster 
 
 O cluster criado contém dois masters e quatro workes, como mostra a imagem abaixo:
 
-![k8s nodes](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/nodes.png)
+![nodes](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/nodes.PNG)
 
 Para criação do cluster foram utilizados as seguintes configurações:
 
