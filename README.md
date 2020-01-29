@@ -198,7 +198,7 @@ Para criação do cluster foram utilizados as seguintes configurações:
 
 Configuração de sistema operacional, docker, kernel, instalação de pacotes:
 
-Acesso aos servidores
+Acesse aos servidores
 
 ```bash
 ssh -i <path-cahve_ssh/id_rsa> -l hebersonaguiar_ti <nome-do-servidor>
@@ -323,13 +323,13 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
-Nesse momeneto o master ainda não está configurado por completo, para finalizar é necessário a configurar a rede do cluster onde todos os nós se comunicarão, para isso iremos utilizar o `https://cloud.weave.works`:
+Nesse momeneto o master ainda não está configurado por completo, para finalizar é necessário a configurar a rede do cluster onde todos os nós e seus recursos se comunicarão, para isso iremos utilizar o `https://cloud.weave.works`:
 
 ```bash
 kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 ```
 
-Pronto, o primeiro masteer está pronto, para incluir o segundo master no cluster iremos acessar o segundo servidor designado como master:
+Pronto, o primeiro master está pronto, para incluir o segundo master no cluster iremos acessar o segundo servidor designado como master:
 
 ```bash
 ssh -i <path-cahve_ssh/id_rsa> -l hebersonaguiar_ti jerry.hebersonaguiar.me
@@ -369,7 +369,7 @@ kubeadm join 10.128.0.13:6443 --token 2wkrhv.pcdpe7qoc3z9e3j2 \
     --discovery-token-ca-cert-hash sha256:40a70e4054a6670bfc22bc7b975e6ec1a0e0a9b749c8d14a5df251f18f30509b
 ```
 
-Aguarde alguns segundos, execute o comando abaixo e você verá alguns servidores sem role definida e o status `Ready`, agora temos um cluster inicial com dois masters e quatro workers.
+Aguarde alguns segundos, execute o comando abaixo e você verá alguns servidores sem role definida e o status `Ready`, agora temos um cluster com dois masters e quatro workers.
 
 
 
