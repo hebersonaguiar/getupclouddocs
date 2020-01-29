@@ -192,9 +192,9 @@ O Ansible é uma ferramenta de automação de código aberto usada para configur
 
 Para criação do cluster foram utilizados as seguintes configurações:
 
-Configuração de sistema operacional, docker, kernel, instalação de pacotes:
+Configuração de sistema operacional, docker, kernel, instalação de pacotes.
 
-Para utiliar o ansible instale o pacote do `ansible` em seu s.o., nesse projeto foi utilizado a versão `2.2.1.0`
+Para utiliar o ansible instale o pacote do `ansible` em seu s.o., nesse projeto foi utilizado a versão `2.2.1.0`.
 
 Faça o clone desse repositório
 
@@ -202,12 +202,13 @@ Faça o clone desse repositório
 cd /opt
 git clone https://github.com/hebersonaguiar/getupclouddocs.git
 ```
-Dentro da pasta `getupclouddocs/files/ansible/` possui os arquivos `hosts` onde contém todos os servidores do cluster kubernetes e o `docker-k8s-pkg` responsável por todas as pré configurações de instalação do cluster kubuernetes como os pacotes necessários, o docker, kubeadm, kubelet e kubectl, também possui as recomendações de kernel e de cgroup-driver do docker, para isso execute os comandos abaixo:
+Dentro da pasta `getupclouddocs/files/ansible/` possui os arquivos `hosts` onde contém todos os servidores do cluster kubernetes e o `docker-k8s-pkg.yaml` responsável por todas as pré configurações de instalação do cluster kubuernetes como os pacotes necessários, o docker, kubeadm, kubelet e kubectl, também possui as recomendações de kernel e de cgroup-driver do docker, para isso execute os comandos abaixo:
 
 ```bash
 ansible-playbook -i /opt/getupclouddocs/files/ansible/hosts  /opt/getupclouddocs/files/ansible/docker-k8s-pkg.yaml --private-key=<absolutepath-cahve_ssh/id_rsa> -u hebersonaguiar_tiansible-playbook -i /opt/getupclouddocs/files/ansible/hosts /opt/getupclouddocs/files/ansible/docker-k8s-pkg.yaml
 ```
 
+No final do processo os servidores serão reinciados para que as configurações tenham efeito, então aguarde uns 2 minutos e continue o restante das configurações.
 
 ## Kubernetes
 
@@ -219,7 +220,7 @@ O cluster criado contém dois masters e quatro workes, como mostra a imagem abai
 
 ![nodes](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/nodes.PNG)
 
-Após a pré configuração dos hosts utilizando o `ansible` na seção anterior, podemos então configurar nos cluster, segue abaixo:
+Após a pré configuração dos hosts utilizando o `ansible` na seção anterior, podemos então configurar nosso cluster, segue abaixo:
 
 Acesse um dos servidores desiguinados como master, nesse casso foi utilizado incialmente o `tom.hebersonaguiar.me`:
 
