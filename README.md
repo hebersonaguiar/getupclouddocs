@@ -87,7 +87,7 @@ Google Cloud:
 
 `Senha: 0pAP6Edu87HRD1XLpZ`
 
-Vote, Result, Prometheus e Kibana possuem acesso livre. 
+Vote, Result, Prometheus, Alert Manager e Kibana possuem acesso livre. 
 
 Para autenticar nos servidores é necessário utilizar chaves para isso utilize essa chave:
 
