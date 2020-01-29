@@ -639,7 +639,7 @@ Os acessos ao grafana são:
 
 * Criação de datasource de conexão com prometheus:
 
-A criação da conexão do grafana com o prometheus é em Datasource > Prometheus, ao clicar vai abrir um formulário para preenchimento, segue abaixo as inforações para preenchimento:
+A criação da conexão do grafana com o prometheus é em Datasource > Prometheus, ao clicar será aberto um formulário para preenchimento, segue abaixo as inforações para preenchimento:
 
 `Nome: Prometheus`
 
@@ -660,7 +660,7 @@ Agora para visualizar, basta ir em Home, clicar no dashboard "Kubernetes Cluster
 
 
 ## Elastic Stack
-O Elastic Stack é um conjunto de aplicações que nos ajudam a ter uma melhor visialização dos logs de ambientes, nesse projeto iremos configurar essas aplicações para que possamos ter os logs de nosso cluster.
+O Elastic Stack é um conjunto de aplicações que nos ajudam a ter uma melhor visialização dos logs de ambientes, nesse projeto iremos configura-lo para que possamos ter os logs de nosso cluster.
 
 Iremos instalar o Elastic Stack utilizando o helm chart, segue abaixo:
 
@@ -701,13 +701,13 @@ Com a stack implantada temos o seguinte resultado no cluster kubernetes:
 
 ![elasticstack](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/elasticstack.png)
 
-Pronto, agora basta acessar o [Kibana](http://kibana.hebersonaguiar.me), configurar os index do metricbeat e pronto.
+Pronto, agora basta acessar o [Kibana](https://kibana.hebersonaguiar.me), configurar os index do metricbeat e pronto.
 
 ![elk](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/kibana.png)
 
 ## Nginx
 
-Para esse projeto foi utilizado o NGiNX como proxy e load balancer das aplicações [vote](https://vote.hebersonaguiar.me), [result](https://result.hebersonaguiar.me) [prometheus](https://prometheus.hebersonaguiar.me), [alertmanager](https://alertmanager.hebersonaguiar.me), [kibana](http://kibana.hebersonaguiar.me) e o [grafana](http://grafana.hebersonaguiar.me)
+Para esse projeto foi utilizado o NGiNX como proxy e load balancer das aplicações [vote](https://vote.hebersonaguiar.me), [result](https://result.hebersonaguiar.me) [prometheus](https://prometheus.hebersonaguiar.me), [alertmanager](https://alertmanager.hebersonaguiar.me), [kibana](https://kibana.hebersonaguiar.me) e o [grafana](https://grafana.hebersonaguiar.me)
 
 Para configurar foi realizado os seguintes passos:
 
