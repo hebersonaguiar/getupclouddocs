@@ -193,9 +193,7 @@ systemctl restart haproxy
 ## Ansible
 O Ansible é uma ferramenta de automação de código aberto usada para configurar servidores, instalar software e executar uma grande variedade de tarefas de TI a partir de uma localização central. É um mecanismo sem agente de um para muitos, onde todas as instruções são executadas a partir de uma máquina de controle que se comunica com clientes remotos em SSH, embora outros protocolos também sejam suportados.
 
-Para criação do cluster foram utilizados as seguintes configurações:
-
-Configuração de sistema operacional, docker, kernel, instalação de pacotes.
+Para criação do cluster foram utilizados as seguintes configurações: sistema operacional, docker, kernel, instalação de pacotes.
 
 Para utiliar o ansible instale o pacote do `ansible` em seu s.o., nesse projeto foi utilizado a versão `2.2.1.0`.
 
