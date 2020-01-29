@@ -1,0 +1,72 @@
+---
+- hosts: all
+  tasks:
+  - name: Instala pacotes para apt add repository
+    become: yes
+    apt:
+      name: "{{ packagesdep }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packagesdep:
+      - git
+      - apt-transport-https
+      - ca-certificates
+      - wget
+      - software-properties-common
+      - gnupg2
+      - curl
+      - vim
+  - name: Adiciona assinatura oficial para docker repo
+    become: yes
+    apt_key:
+      url: https://download.docker.com/linux/debian/gpg
+      state: present
+  - name: Adiciona repositorio oficial docker Debian Stretch
+    become: yes
+    apt_repository:
+      repo: deb [arch=amd64] https://download.docker.com/linux/debian stretch stable
+      state: present
+  - name: Instala docker
+    become: yes
+    apt:
+      name: "docker-ce"
+      state: latest
+  - name: Adiciona assinatura oficial para kubernetes repo
+    become: yes
+    apt_key:
+      url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+      state: present
+  - name: Adiciona repositorio oficial kubernetes Debian
+    become: yes
+    apt_repository:
+      repo: deb [arch=amd64] https://apt.kubernetes.io/ kubernetes-xenial main
+      state: present
+  - name: Instala pacotes kubernetes
+    become: yes
+    apt:
+      name: "{{ packagesdep }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packagesdep:
+      - kubelet
+      - kubeadm
+      - kubectl
+  - name: Copia arquivos de modulos kubernetes
+    become: yes
+    copy:
+      src: /opt/getupclouddocs/files/ansible/k8s.conf
+      dest: /etc/modules-load.d/k8s.conf
+      owner: root
+      group: root
+  - name: Copia arquivo de configuracao docker
+    become: yes
+    copy:
+      src: /opt/getupclouddocs/files/ansible/daemon.json
+      dest: /etc/docker/daemon.json
+      owner: root
+      group: root
+  - name: Reboot system
+    become: yes
+    command: 'shutdown -r 1'

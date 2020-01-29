@@ -20,6 +20,8 @@ Para esse desafio foram utilizados as seguintes tecnologias:
 
 [HAproxy](https://github.com/hebersonaguiar/getupclouddocs#haproxy)
 
+[Ansible](https://github.com/hebersonaguiar/getupclouddocs#ansbile)
+
 [Kubernetes](https://github.com/hebersonaguiar/getupclouddocs#kubernetes)
 
 [Voting App](https://github.com/hebersonaguiar/getupclouddocs#voting-app)
@@ -185,6 +187,27 @@ Após realizar as configurações acima bastar reiniciar o serviço do haproxy:
 systemctl restart haproxy
 ```
 
+## Ansible
+O Ansible é uma ferramenta de automação de código aberto usada para configurar servidores, instalar software e executar uma grande variedade de tarefas de TI a partir de uma localização central. É um mecanismo sem agente de um para muitos, onde todas as instruções são executadas a partir de uma máquina de controle que se comunica com clientes remotos em SSH, embora outros protocolos também sejam suportados.
+
+Para criação do cluster foram utilizados as seguintes configurações:
+
+Configuração de sistema operacional, docker, kernel, instalação de pacotes:
+
+Para utiliar o ansible instale o pacote do `ansible` em seu s.o., nesse projeto foi utilizado a versão `2.2.1.0`
+
+Faça o clone desse repositório
+
+```bash
+cd /opt
+git clone https://github.com/hebersonaguiar/getupclouddocs.git
+```
+Dentro da pasta `getupclouddocs/files/ansible/` possui os arquivos `hosts` onde contém todos os servidores do cluster kubernetes e o `docker-k8s-pkg` responsável por todas as pré configurações de instalação do cluster kubuernetes como os pacotes necessários, o docker, kubeadm, kubelet e kubectl, também possui as recomendações de kernel e de cgroup-driver do docker, para isso execute os comandos abaixo:
+
+```bash
+ansible-playbook -i /opt/getupclouddocs/files/ansible/hosts  /opt/getupclouddocs/files/ansible/docker-k8s-pkg.yaml --private-key=<absolutepath-cahve_ssh/id_rsa> -u hebersonaguiar_tiansible-playbook -i /opt/getupclouddocs/files/ansible/hosts /opt/getupclouddocs/files/ansible/docker-k8s-pkg.yaml
+```
+
 
 ## Kubernetes
 
@@ -196,63 +219,7 @@ O cluster criado contém dois masters e quatro workes, como mostra a imagem abai
 
 ![nodes](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/nodes.PNG)
 
-Para criação do cluster foram utilizados as seguintes configurações:
-
-Configuração de sistema operacional, docker, kernel, instalação de pacotes:
-
-Acesse todos servidores desiguinados ao cluster kubernetes
-
-```bash
-ssh -i <path-cahve_ssh/id_rsa> -l hebersonaguiar_ti <nome-do-servidor>
-```
-
-Configuração de módulos de kernel
-
-```bash
-cat > /etc/modules-load.d/k8s.conf <<EOF
-br_netfilter
-ip_vs_rr
-ip_vs_wrr
-ip_vs_sh
-nf_conntrack_ipv4
-ip_vs
-EOF
-```
-
-Atualização e instalação de pacotes docker e kubernetes
-
-```bash
-bash <<EOF
-apt-get update
-apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common vim
-curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
-add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-echo 'deb https://apt.kubernetes.io/ kubernetes-xenial main' > /etc/apt/sources.list.d/kubernetes.list
-apt-get update
-apt-get install -y docker-ce docker-ce-cli containerd.io kubelet kubeadm kubectl
-apt-mark hold kubelet kubeadm kubectl
-EOF
-```
-
-Configuração de `cgroup-driver` (recomendação kubernetes) e log-driver
-
-```bash
-cat > /etc/docker/daemon.json <<EOF
-{
-  "exec-opts": ["native.cgroupdriver=systemd"],
-  "log-driver": "journald"
-}
-EOF
-```
-
-Após as configurações é necessário a reinicialiaão dos servidores para que os módulos de kernel seja habilitados e as alterações tenham efeitos:
-
-```bash
-reboot
-```
-
-Instalação dos servidores masters
+Após a pré configuração dos hosts utilizando o `ansible` na seção anterior, podemos então configurar nos cluster, segue abaixo:
 
 Acesse um dos servidores desiguinados como master, nesse casso foi utilizado incialmente o `tom.hebersonaguiar.me`:
 
