@@ -390,7 +390,7 @@ EOF
 kubectl create -f vote-namespace.yaml
 ```
 
-Antes de iniciar a aplicação deve-se informar que os `Deployments` oringinais `vote`, `result` e `worker` foram alterados para `DaemonSet` para que cada worker possua um pod de cada umas das aplicações informadas, isso faz com que o Load Balancer criado com [Nginx](https://github.com/hebersonaguiar/getupclouddocs#nginx) funcione corretamente.
+Antes de iniciar a aplicação deve-se informar que os `Deployments` oringinais [vote](https://vote.hebersonaguiar.me), [result](https://result.hebersonaguiar.me) e [worker]((https://worker.hebersonaguiar.me)) foram alterados para `DaemonSet` para que cada worker possua um pod de cada umas das aplicações informadas, isso faz com que o Load Balancer criado com [Nginx](https://github.com/hebersonaguiar/getupclouddocs#nginx) funcione corretamente.
 
 Para iniciar a aplicação baixe os arquivos desse repositório em um dos masters:
 
@@ -408,19 +408,92 @@ Realizado o comando acima, serão inicializados, `replicaset`, `deployment`, `da
 
 ![votingapp](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/voting-app.png)
 
-Como mostra a imagem acima, temos dois serviços do tipo `NodePort` que são das aplicações `vote` e `result`, ou seja, o acessos dessas aplicações podem ser acessadas diretamente dos nós workers nas portas `31000` e `31001` respectivamente. Essas portas serão configuradas futuramente no Load Balancer do [Nginx](https://github.com/hebersonaguiar/getupclouddocs#nginx) e iremos acessar e poder brincar com a aplicações.
+Como mostra a imagem acima, temos dois serviços do tipo `NodePort` que são das aplicações [vote](https://vote.hebersonaguiar.me) e [result](https://result.hebersonaguiar.me), ou seja, o acessos dessas aplicações podem ser acessadas diretamente dos nós workers nas portas `31000` e `31001` respectivamente. Essas portas serão configuradas futuramente no Load Balancer do [Nginx](https://github.com/hebersonaguiar/getupclouddocs#nginx) e iremos acessar e poder brincar com a aplicações.
 
 
 ## Helm Chart
 O Helm Chart é um gerenciador de aplicações Kubernetes onde cria, versiona, compartilha e pública os artefatos. Com ele é possível desenvolver templates dos arquivos YAML e durante a instalação de cada aplicação personalizar os parâmentros com facilidade. 
 
-Nesse projeto o helm chart foi utilizado
+Nesse projeto o helm chart foi utilizado para deploy das aplicações [prometheus](https://prometheus.hebersonaguiar.me), [grafana](https://grafana.hebersonaguiar.me), [alertmanager](https://alertmanager.hebersonaguiar.me) e a stack do elastic acessando pelo [kibana](https://kibana.hebersonaguiar.me).
 
-Nesse projeto o helm chart foi utilizado nos repositórios das aplicações [Frontend](https://github.com/hebersonaguiar/ditochatfrontend/tree/master/charts/ditochatfrontend) e [Backend](https://github.com/hebersonaguiar/ditochatbackend/tree/master/charts/ditochatbackend), no qual foi emcapsulado todos os arquivos necessários para a implantação das aplicações, como deployment, service, persistente volume, etc, um template padrão de uma aplicação é a seguinte:
+Antes de iniciar as aplicações é necessário a configuração do `helm` e `tiller`:
 
-![helm chart template](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/helm-chart-temp.png)
+Esse passo deve ser executado em todos os masters:
+```bash
+cd /opt
+wget https://get.helm.sh/helm-v2.16.1-linux-amd64.tar.gz
+tar -zxvf helm-v2.16.1-linux-amd64.tar.gz
+mv linux-amd64/helm /usr/local/bin/helm
+```
 
-Dentro do diretório de charts, existe um arquivo chamado `values.yaml`, muito importante dentro de um helm chart, ele é o resposável por informar para os arquivios YAML quais os valores que serão alterados que podem ser por exemplo: quantidade de replicas, portas de acesso, tipo de deploy, tamanho do volume a ser utilizado, etc.
+Configuração do Tiller, executar em apenas um nó:
+```bash
+kubectl -n kube-system create serviceaccount tiller
+
+kubectl create clusterrolebinding tiller \
+  --clusterrole=cluster-admin \
+  --serviceaccount=kube-system:tiller
+
+helm init --service-account tiller
+
+kubectl -n kube-system  rollout status deploy/tiller-deploy
+
+helm version --short
+Client: v2.16.1+gbbdfe5e
+Server: v2.16.1+gbbdfe5e
+```
+
+Antes das instalação iremos criar o ` namespace` que irá alocar nossas aplicações de minitoramento e logs:
+
+```bash
+kubectl create ns observability
+``` 
+
+Primeira aplicação a ser iniciada é o [prometheus](https://prometheus.hebersonaguiar.me), [alertmanager](https://alertmanager.hebersonaguiar.me), no qual são inciadas juntas, nelas serão configuradas a porta de serviço como `NodePort` e desabilitar o persistente volume, segue abaixo a instalação:
+
+```bash
+helm install --name prometheus --namespace observability --set \
+	alertmanager.persistentVolume.enabled=false,server.persistentVolume.enabled=false, \
+	alertmanager.service.type=NodePort,server.service.type=NodePort \
+	stable/prometheus
+```
+
+Próxima aplicação a ser iniciada é o [grafana](https://grafana.hebersonaguiar.me), no qual irá se conectar ao prometheus e vai nos trazer as métricas do ambiente como uso de disco, memória, cpu, etc, tudo em um dashboard que iremos configurar posteriormente, para iniciar iremos configuar apenas o serviço como n`NodePort`:
+
+```bash
+helm install --name grafana --namespace observability --set service.type=NodePort stable/grafana
+```
+Para resgatar a senha do usuário `admin` do grafana utilize o comando abaixo: 
+
+```bash
+kubectl get secret --namespace observability grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+```
+
+Agora iremos iniciar a stack do Elastic, inicialmente precisamos configuar o repositório de chart do elastic:
+
+```bash
+helm repo add elastic https://helm.elastic.co
+```
+
+Posteriormente vamos iniciar o elasticsearch desabilitando o persistente volume:
+
+```bash
+helm install --name elasticsearch --namespace observability --set persistence.enabled=false elastic/elasticsearch
+```
+
+Após iniciar o elasticsearch podemos então iniciar o kibana configurando o serviço como `NodePort`:
+
+```bash
+helm install --name kibana --namespace observability --set service.type=NodePort elastic/kibana
+```
+
+Para finalizar precisamos configurar o metricbeat para que possamos resgatar os logs e seus respectivos índices:
+
+```bash
+helm install --name metricbeat --namespace observability elastic/metricbeat
+```
+
+
 
 
 ## GitHub
