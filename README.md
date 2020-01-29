@@ -598,7 +598,7 @@ helm install --name prometheus --namespace observability --set \
 	stable/prometheus
 ```
 
-[Prometheus](http://prometheus.hebersonaguiar.me/graph) em execução:
+[Prometheus](https://prometheus.hebersonaguiar.me/graph) em execução:
 
 ![prometheus](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/prometheus.png)
 
