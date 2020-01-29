@@ -445,16 +445,6 @@ Server: v2.16.1+gbbdfe5e
 
 
 
-Próxima aplicação a ser iniciada é o [grafana](https://grafana.hebersonaguiar.me), no qual irá se conectar ao prometheus e vai nos trazer as métricas do ambiente como uso de disco, memória, cpu, etc, tudo em um dashboard que iremos configurar posteriormente, para iniciar iremos configuar apenas o serviço como n`NodePort`:
-
-```bash
-helm install --name grafana --namespace observability --set service.type=NodePort stable/grafana
-```
-Para resgatar a senha do usuário `admin` do grafana utilize o comando abaixo: 
-
-```bash
-kubectl get secret --namespace observability grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
-```
 
 Agora iremos iniciar a stack do Elastic, inicialmente precisamos configuar o repositório de chart do elastic:
 
@@ -499,7 +489,7 @@ Antes das instalação iremos criar o ` namespace` que irá alocar nossas aplica
 kubectl create ns observability
 ``` 
 
-Primeira aplicação a ser iniciada é o [prometheus](https://prometheus.hebersonaguiar.me), [alertmanager](https://alertmanager.hebersonaguiar.me), no qual são inciadas juntas, nelas serão configuradas a porta de serviço como `NodePort` e desabilitar o persistente volume, segue abaixo a instalação:
+Serão implantadas o [prometheus](https://prometheus.hebersonaguiar.me) e [alertmanager](https://alertmanager.hebersonaguiar.me), no qual são inciadas juntas, nelas serão configuradas a porta de serviço como `NodePort` e desabilitar o persistente volume, segue abaixo a instalação:
 
 ```bash
 helm install --name prometheus --namespace observability --set \
@@ -518,43 +508,34 @@ Grafana é uma suíte de análise e visualização métrica de código aberto. �
 
 Nesse projeto iremos instalar o grafana e configurá-lo para conectar-se ao prometheus e configurar dashboards de métricas do cluster e as aplicações, para isso iremos utilizar o helm chart,  para sua instalação iremos utilizar o comando abaixo:
 
-* Criação de um namespace para o monitoramento e log (caso não exista)
+* Criação de um namespace para o observability e log (caso não exista)
 
 ```bash
-kubectl create namespace monitoring-log
+kubectl create ns observability
 ```
 
-* Instalação do grafana
+Será implantado o [grafana](https://grafana.hebersonaguiar.me), no qual irá se conectar ao prometheus e vai nos trazer as métricas do ambiente como uso de disco, memória, cpu, etc, tudo em um dashboard que iremos configurar posteriormente, para iniciar iremos configuar apenas o serviço como `NodePort`:
 
 ```bash
-helm install --name grafana \
-	--set persistence.enabled=false \
-	--namespace monitoring-log \
-	 stable/grafana
+helm install --name grafana --namespace observability --set service.type=NodePort stable/grafana
 ```
-
-Após todos os serviços estarem funcionando, será necessário criar um ingress para o acesso externo, para isso iremos utilizar o comando abaixo:
+Para resgatar a senha do usuário `admin` do grafana utilize o comando abaixo: 
 
 ```bash
-kubectl create -f ingress-grafana.yaml
+kubectl get secret --namespace observability grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 ```
-O arquivo de configuação do ingress encontra-se em `conf/k8s/`
 
-[Grafana](http://grafana.ditochallenge.com) em execução:
+[Grafana](http://grafana.hebersonaguiar.me) em execução:
 
 ![grafana](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/grafana.png)
 
-Na instalação do grafana é criado uma senha de acesso, para consulta-la execute o comando abaixo:
-
-```bash
-kubectl get secret --namespace monitoring-log grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
-```
 
 Os acessos ao grafana são:
 
 `Usuário: admin`
 
-`Senha: gc5iMZLszrPVwLaJyEGxEf7nNvxL7uq0YGkLQU4p`
+`Senha: yXRXQ3RFb143zGf7bq4N2v6phlfI2rUKjsKo2X3V`
+
 
 Criação de datasource de conexão com prometheus:
 
@@ -562,20 +543,20 @@ A criação da conexão do grafana com o prometheus é em Datasource > Prometheu
 
 `Nome: Prometheus`
 
-`URL de conexão com prometheus: http://prometheus.ditochallenge.com`
+`URL de conexão com prometheus: https://prometheus.hebersonaguiar.me`
 
 Pronto, é só clicar em testar e salvar.
  
 
 * Importação de dashboards
 
-Dentro da pasta `conf/grafana/` possui alguns arquivos do tipo `.json` que são os dashboards que iremos utilizar, no qual mostra todas as infomrações do cluster, como, uso de memória, CPU, disco, etc, são métricas do cluster e dos contêiners. 
+Dentro da pasta `files/grafana/` possui um arquivo do tipo `.json` que são os dashboards que iremos utilizar, no qual mostra todas as infomrações do cluster, como, uso de memória, CPU, disco, etc, são métricas do cluster e dos contêiners. 
 
 A importação de um dashboard é bem simples, no canto superior esquerdo, possui um ícone com o nome Home, ao clicar será aberto um modal com algumas informações, entre elas a `Import Dashboard`, ao clicar uma nova página é aberta e algumas informações são solicitadas, que são como que o dashboard vai ser importado nele possui três formas, upload de um arquivo `.json`, o ID de um dashboard público ou colar o conteúdo de um arquivo `.json`, nesse caso, como temos um dashboard customizado iremos colar o contéudo do nosso arquivo `.json`, feito isso basta apenas clicar em load.
 
 Agora para visualizar, basta ir em Home, clicar no dashboard "Kubernetes Cluster - Monitoramento" e visualizar os dados, como mostra a imagem abaixo:
 
-![grafana](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/grafana-monitoring.png)
+![grafana](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/grafana-dash.png)
 
 
 ## ELK
