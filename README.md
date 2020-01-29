@@ -386,6 +386,9 @@ metadata:
   name: vote
 EOF
 ```
+```bash
+kubectl create -f vote-namespace.yaml
+```
 
 Antes de iniciar a aplicação deve-se informar que os `Deployments` oringinais `vote`, `result` e `worker` foram alterados para `DaemonSet` para que cada worker possua um pod de cada umas das aplicações informadas, isso faz com que o Load Balancer criado com [Nginx](https://github.com/hebersonaguiar/getupclouddocs#nginx) funcione corretamente.
 
