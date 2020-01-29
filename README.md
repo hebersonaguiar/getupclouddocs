@@ -522,9 +522,11 @@ Realizado o comando acima, serão inicializados, `replicaset`, `deployment`, `da
 Como mostra a imagem acima, temos dois serviços do tipo `NodePort` que são das aplicações [vote](https://vote.hebersonaguiar.me) e [result](https://result.hebersonaguiar.me), ou seja, o acessos dessas aplicações podem ser acessadas diretamente dos nós workers nas portas `31000` e `31001` respectivamente. Essas portas foram configuradas no Load Balancer do [Nginx](https://github.com/hebersonaguiar/getupclouddocs#nginx) e onde podemos acessar e brincar com as aplicações:
 
 * Vote
+
 ![vote](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/vote.png)
 
 * Result
+
 ![result](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/result.png)
 
 ## Helm Chart
