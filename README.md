@@ -182,7 +182,7 @@ server k8s-master-0 10.128.0.42:6443 check fall 3 rise 2
 server k8s-master-1 10.128.0.43:6443 check fall 3 rise 2
 EOF
 ```
-Os ip's `10.128.0.42` e `10.128.0.43` são os ips internos dos servidores masters `tom` e `jerry` respectivamente, a porta `6443` é a porta do `kube-apiserver` responsável por fornecer os serviços de comunicação do cluster, como por exemplo criar, consulta, deletar um recurso do cluster.
+Os ip's `10.128.0.42` e `10.128.0.43` são os ips internos dos servidores masters `tom` e `jerry` respectivamente, o ip `10.128.0.13` é o ip do HAproxy no qual os masters e as requisições iram ser solicitadas, a porta `6443` é a porta do `kube-apiserver` responsável por fornecer os serviços de comunicação do cluster, como por exemplo criar, consulta, deletar um recurso do cluster.
 
 Após realizar as configurações acima bastar reiniciar o serviço do haproxy:
 
