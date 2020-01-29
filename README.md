@@ -525,7 +525,7 @@ Para resgatar a senha do usuário `admin` do grafana utilize o comando abaixo:
 kubectl get secret --namespace observability grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 ```
 
-[Grafana](http://grafana.hebersonaguiar.me) em execução:
+[Grafana](https://grafana.hebersonaguiar.me) em execução:
 
 ![grafana](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/grafana.png)
 
@@ -537,7 +537,7 @@ Os acessos ao grafana são:
 `Senha: yXRXQ3RFb143zGf7bq4N2v6phlfI2rUKjsKo2X3V`
 
 
-Criação de datasource de conexão com prometheus:
+* Criação de datasource de conexão com prometheus:
 
 A criação da conexão do grafana com o prometheus é em Datasource > Prometheus, ao clicar vai abrir um formulário para preenchimento, segue abaixo as inforações para preenchimento:
 
