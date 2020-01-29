@@ -556,7 +556,7 @@ tar -zxvf helm-v2.16.1-linux-amd64.tar.gz
 mv linux-amd64/helm /usr/local/bin/helm
 ```
 
-Configuração do Tiller, executar em apenas um nó:
+Configuração do Tiller, executar em apenas um nó master:
 ```bash
 kubectl -n kube-system create serviceaccount tiller
 
