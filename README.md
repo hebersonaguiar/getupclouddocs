@@ -340,6 +340,9 @@ Para incluir os workers acesse todos os servidores desiguinados como workers:
 ```bash
 ssh -i <path-cahve_ssh/id_rsa> -l hebersonaguiar_ti <nome-do-servidor-worker>
 ```
+```bash
+sudo -i
+```
 
 Insira o servidor no cluster com os dados informados na inicialização do cluster:
 
