@@ -442,7 +442,7 @@ EOF
 kubectl create -f clusterrolebinding-dev.yaml 
 ```
 
-Os arqvuivos de configuração RBAC estão em `files/voting-app/k8s-rbac-dev/config-dev`. Configurações RBAC realizadas, iremos agora configurar o acesso do usuário `desenvolvedor` no cluster:
+Os arqvuivos de configuração RBAC estão em `files/voting-app/k8s-rbac-dev`. Configurações RBAC realizadas, iremos agora configurar o acesso do usuário `desenvolvedor` no cluster:
 
 Recuperando Token do Service Account
 
@@ -464,7 +464,7 @@ kubectl config set-context devreader --cluster=kubernetes --user=desenvolvedor
 
 Usuário e acessos configurado, foi então configurado o arquivo `~/.kube/config` do usuário `desenvolvedor` dentro do perfil nos servidores masters, o arquivo de configuração está em `files/voting-app/k8s-rbac-dev/config-dev`
 
-Check de permissões do usuário `desenvolvedor`
+Check de permissões do usuário `desenvolvedor`:
 
 ![dev-access](https://github.com/hebersonaguiar/getupclouddocs/blob/master/images/check-access-dev.png)
 
