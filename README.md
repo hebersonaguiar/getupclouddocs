@@ -512,7 +512,7 @@ git clone https://github.com/hebersonaguiar/getupclouddocs.git
 Inicie a aplicação com o comando abaixo:
 
 ```bash
-kubectl create -f files/voting-app/k8s-voting/
+kubectl create -f getupclouddocs/files/voting-app/k8s-voting/
 ```
 
 Realizado o comando acima, serão inicializados, `replicaset`, `deployment`, `daemonset`, `service` e os `pods` das aplicações `vote`, `result`, `worker` da base de dados e do redis, como mostra a imagem abaixo:
