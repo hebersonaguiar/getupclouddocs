@@ -665,6 +665,13 @@ O Elastic Stack é um conjunto de aplicações que nos ajudam a ter uma melhor v
 
 Iremos instalar o Elastic Stack utilizando o helm chart, segue abaixo:
 
+```bash
+ssh -i <path-cahve_ssh/id_rsa> -l hebersonaguiar_ti tom.hebersonaguiar.me
+```
+```bash
+sudo -i
+```
+
 * Criação de um namespace para o observability (caso não exista)
 
 ```bash
