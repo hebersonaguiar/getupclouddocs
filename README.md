@@ -305,14 +305,13 @@ kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl versio
 
 Pronto, o primeiro master está pronto, para incluir o segundo master no cluster iremos acessar o segundo servidor designado como master:
 
-```bash
-sudo -i
-```
 
 ```bash
 ssh -i <path-cahve_ssh/id_rsa> -l hebersonaguiar_ti jerry.hebersonaguiar.me
 ```
-
+```bash
+sudo -i
+```
 Insira o servidor no cluster com os dados informados na inicialização do cluster:
 
 ```bash
