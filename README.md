@@ -574,6 +574,12 @@ Iremos utilizar nesse projeto o prometheus para coletar dados do cluster kuberne
 Antes das instalação iremos criar o ` namespace` que irá alocar nossas aplicações de minitoramento e logs:
 
 ```bash
+ssh -i <path-cahve_ssh/id_rsa> -l hebersonaguiar_ti tom.hebersonaguiar.me
+```
+```bash
+sudo -i
+```
+```bash
 kubectl create ns observability
 ``` 
 
