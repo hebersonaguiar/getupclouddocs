@@ -226,10 +226,14 @@ Após a pré configuração dos hosts utilizando o `ansible` na seção anterior
 Acesse um dos servidores desiguinados como master, nesse casso foi utilizado incialmente o `tom.hebersonaguiar.me`:
 
 ```bash
-ssh -i <path-cahve_ssh/id_rsa> -l hebersonaguiar_ti tom.hebersonaguiar.me
+ssh -i <path-cahve_ssh/id_rsa> -l hebersonaguiar_ti tom.hebersonaguiar.me 
 ```
 
 Para iniciar o cluster através do kubeadm é preciso criar um arquivo que indicará onde está o load balancer bem como o endereço de rede utilizaremos tanto para a máquina como para os containers, segue abaixo:
+
+```bash
+sudo -i
+```
 
 ```bash
 cat > /root/kubeadm-config.yml <<EOF
