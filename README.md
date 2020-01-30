@@ -602,6 +602,13 @@ Grafana é uma suíte de análise e visualização métrica de código aberto. �
 
 Nesse projeto iremos instalar o grafana e configurá-lo para conectar-se ao prometheus e configurar dashboards de métricas do cluster e as aplicações, para isso iremos utilizar o helm chart,  para sua instalação iremos utilizar o comando abaixo:
 
+```bash
+ssh -i <path-cahve_ssh/id_rsa> -l hebersonaguiar_ti tom.hebersonaguiar.me
+```
+```bash
+sudo -i
+```
+
 * Criação de um namespace para o observability (caso não exista)
 
 ```bash
