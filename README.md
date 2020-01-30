@@ -886,7 +886,7 @@ EOF
 ```bash
 cat > /etc/nginx/conf.d/kibana.conf <<EOF
 upstream backend_kibana {
-   server 10.168.0.2:30103; 
+   server 10.138.0.8:30956; 
 }
 
 server {
