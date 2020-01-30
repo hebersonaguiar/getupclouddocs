@@ -93,6 +93,12 @@ Para autenticar nos servidores é necessário utilizar chaves para isso utilize 
 
 [Chave SSH](https://github.com/hebersonaguiar/getupclouddocs/blob/master/files/keys/id_rsa)
 
+Altere as permissões da chave de acesso
+
+```bash
+chmod 0600 id_rsa
+```
+
 Para autenticar utilizando terminal linux utilize comando abaixo:
 
 Usuário Admin `hebersonaguiar_ti`
