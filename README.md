@@ -693,7 +693,7 @@ Posteriormente vamos iniciar o elasticsearch desabilitando o persistente volume:
 helm install --name elasticsearch --namespace observability --set persistence.enabled=false elastic/elasticsearch
 ```
 
-Após iniciar o elasticsearch podemos então iniciar o kibana configurando o serviço como `NodePort`:
+Aguarde alguns instantes até que os três pods dos `elasticsearch` estejam com o status `Running` asim então podemos iniciar o kibana configurando o serviço como `NodePort`:
 
 ```bash
 helm install --name kibana --namespace observability --set service.type=NodePort elastic/kibana
