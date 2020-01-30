@@ -724,6 +724,9 @@ Acesso ao servidor `haproxy.hebersonaguiar.me`
 ```bash
 ssh -i <path-cahve_ssh/id_rsa> -l hebersonaguiar_ti haproxy.hebersonaguiar.me
 ```
+```bash
+sudo -i
+```
 
 Instalação do NGiNX:
 
