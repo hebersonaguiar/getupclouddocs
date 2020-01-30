@@ -477,6 +477,9 @@ Acesse um dos masters:
 ```bash
 ssh -i <path-cahve_ssh/id_rsa> -l hebersonaguiar_ti tom.hebersonaguiar.me
 ```
+```bash
+sudo -i
+```
 
 Crie o namespace:
 
