@@ -258,7 +258,7 @@ Realizados as configurações acima, vamos iniciar o cluster:
 kubeadm init --config '/root/kubeadm-config.yml' --upload-certs
 ```
 
-Ao executar o comando acima serão realizados o download dos containers necessários para funcionamento do cluster como por exemplo o `Core DNS`, `etcd` e serão realizados todas as configurações de arquivos, chaves, kubelet, etc e o resultado é o abaixo:
+Ao executar o comando acima serão realizados o download dos containers necessários para funcionamento do cluster como por exemplo o `Core DNS`, `etcd` e serão realizados todas as configurações de arquivos, chaves, kubelet, etc e o resultado é:
 
 ```bash
 Your Kubernetes control-plane has initialized successfully!
