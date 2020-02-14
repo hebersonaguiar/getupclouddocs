@@ -72,7 +72,6 @@ Worker 3 -- patolino.hebersonaguiar.me
 Worker 4 -- charliebrown.hebersonaguiar.me
 
 
-
 Credenciais de acesso:
 
 Grafana:
@@ -82,16 +81,6 @@ Grafana:
 `Senha: yXRXQ3RFb143zGf7bq4N2v6phlfI2rUKjsKo2X3V`
 
 Vote, Result, Prometheus, Alert Manager e Kibana possuem acesso livre. 
-
-Para autenticar nos servidores é necessário utilizar chaves para isso utilize essa chave:
-
-[Chave SSH](https://github.com/hebersonaguiar/getupclouddocs/blob/master/files/keys/id_rsa)
-
-Altere as permissões da chave de acesso
-
-```bash
-chmod 0600 id_rsa
-```
 
 Para autenticar utilizando terminal linux utilize comando abaixo:
 
