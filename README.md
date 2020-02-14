@@ -81,12 +81,6 @@ Grafana:
 
 `Senha: yXRXQ3RFb143zGf7bq4N2v6phlfI2rUKjsKo2X3V`
 
-Google Cloud:
-
-`Usuário: hebersonaguiar.ti@gmail.com`
-
-`Senha: 0pAP6Edu87HRD1XLpZ`
-
 Vote, Result, Prometheus, Alert Manager e Kibana possuem acesso livre. 
 
 Para autenticar nos servidores é necessário utilizar chaves para isso utilize essa chave:
